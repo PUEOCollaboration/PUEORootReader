@@ -22,6 +22,8 @@ class PUEORootReader():
 
     Attributes
     ----------
+    file : str
+        The provided filepath.
     run : int
         The active run number.
     event : int
@@ -84,13 +86,17 @@ class PUEORootReader():
     getTriggerTypes()
         Returns the list of trigger types for every event in the active run. Types: 0=RF, 1=SW, 2=PPS, 3=EXT
     getWF(channel)
-        Return the given channel's waveform for the current active event.
+        Returns the given channel's waveform for the current active event.
+    getBranch(branch)
+        Returns the original data branch requested. This is the preferred method over accessing the private attributes.
     '''
 
     def __init__(self, rootfile, run=None, event=None):
 
+        self.file = rootfile
+
         # unpack all raw data
-        with uproot.open(rootfile) as data:
+        with uproot.open(self.file) as data:
             self._RUNS = data['eventTree']['run'].array()
             self._EVENTS = data['eventTree']['event'].array()
             self._EVENT_SECOND = data['eventTree']['event_second'].array()
@@ -210,9 +216,14 @@ class PUEORootReader():
         return (1*self._SOFT_TRIGGER + 2*self._PPS_TRIGGER + 3*self._EXT_TRIGGER)[np.asarray(self.run == self._RUNS).nonzero()[0]]
 
     def getWF(self, channel):
-        '''Return the given channel's waveform for the current active event.'''
+        '''Returns the given channel's waveform for the current active event.'''
         index_of_channel = np.asarray(self.channel_ids == int(channel)).nonzero()[0][0]
         return self.wfs[index_of_channel]
+
+    def getBranch(self, branch):
+        '''Returns the original data branch requested. This is the preferred method over accessing the private attributes.'''
+        with uproot.open(self.file) as data:
+            return np.copy(data['eventTree'][branch].array())
 
         
     def _INITIALIZE_EVENT(self):
