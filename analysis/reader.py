@@ -76,7 +76,7 @@ class PUEORootReader():
     N : int
         The number of events found in the active run.
     triggered_l2_sectors : array
-        The triggered L2 sectors. Each sector represents two adjacent SURFs with sufficient power in their overlapping beams.
+        The triggered L2 sectors. Each sector represents two adjacent SURFs with overlapping beams.
         These are determined by the nonzero binary digits in the l2_mask.
 
     Methods
@@ -189,7 +189,7 @@ class PUEORootReader():
 
     @property
     def triggered_l2_sectors(self):
-        '''The triggered L2 sectors. Each sector represents two adjacent SURFs with sufficient power in their overlapping beams.
+        '''The triggered L2 sectors. Each sector represents two adjacent SURFs with overlapping beams.
         These are determined by the nonzero binary digits in the l2_mask.'''
         return np.cumsum([1+len(l2) for l2 in self.l2_mask.split('1')[::-1]])[:-1] - 1
 
