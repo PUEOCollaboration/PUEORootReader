@@ -1,5 +1,5 @@
 '''
-A Reader class for reading PUEO ROOTified flight data.
+A Reader class for reading Simple-ROOTified Full Waveform PUEO flight data.
 
 Made by Zachary Martin, 2025 12 25
 '''
@@ -11,10 +11,13 @@ import datetime
 
 class PUEORootReader():
     '''
-    This class unpacks PUEO flight ROOT data, converting each branch to an easily accessible attribute for a given
-    run and event. Calling any particular attribute will return the data values for the active run + active event.
-    The active run and active event can be changed with PUEORootReader.setRun() and PUEORootReader.setEvent().
-    Immediate derivations from the ROOT data can also be accessed as attributes.
+    This class unpacks full-waveform PUEO flight ROOT data, ROOTified according to
+    https://github.com/PUEOCollaboration/pueo-simple-root/blob/main/README.md 
+    
+    Each branch is unpacked to an easily accessible attribute for a given run and event. Calling any particular 
+    attribute will return the data values for the active run + active event. The active run and active event can 
+    be changed with PUEORootReader.setRun() and PUEORootReader.setEvent(). Immediate derivations from the ROOT 
+    data can also be accessed as attributes.
 
     Disclaimer: We are organizing data by runs, so normally this is going to be used with single run ROOT files.
     But the ROOT files are designed to be easily concatenated. So the option to set the run is there if you need.
@@ -259,10 +262,3 @@ class PUEORootReader():
         self.surf_word = self._SURF_WORD[self._active_index]
         self.wf_length = self._WF_LENGTH[self._active_index]
         self.wfs = self._WFS[self._active_index]
-
-
-# Don't have the file locally? No problem! All you need is this function, and... patience :)
-def seekRootFile(run, chunk, user='', password=''):
-    '''Seek the data ROOT file path from online. These files come from "/data/pueo/starlink-offline/rootified/". 
-    The run and chunk refer to the subdirectory and saved data chunk (100, 200, ...).'''
-    return f'https://{user}:{password}@pueo.uchicago.edu/data/pueo/starlink-offline/rootified/run{run:04d}/{chunk:06d}.root'

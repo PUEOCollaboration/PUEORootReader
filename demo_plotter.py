@@ -1,4 +1,4 @@
-from analysis.reader import PUEORootReader
+from pueorootreader import PUEORootReader
 from matplotlib import pyplot as plt
 import numpy as np
 
